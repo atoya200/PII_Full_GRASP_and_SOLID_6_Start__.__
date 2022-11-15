@@ -11,11 +11,30 @@ namespace Full_GRASP_And_SOLID
 {
     public class Recipe : IRecipeContent // Modificado por DIP
     {
+        public bool Cooked { get; private set; }
         // Cambiado por OCP
         private IList<BaseStep> steps = new List<BaseStep>();
 
         public Product FinalProduct { get; set; }
 
+        /// <summary>
+        /// Para poder calcular cuando dejo de cocinar en base al tiempo de los pasos
+        /// </summary>
+        /// <returns></returns>
+        private CountdownTimer timer = new CountdownTimer();
+
+        /// <summary>
+        /// Creamos un objeto adaptador, para no violar ISP
+        /// </summary>
+        private TimerAdapter timerClient; 
+
+        /// <summary>
+        /// Para inicializar propiedades es que implemento el constructor
+        /// </summary>
+        public Recipe()
+        {
+            Cooked = false;
+        }
         // Agregado por Creator
         public void AddStep(Product input, double quantity, Equipment equipment, int time)
         {
@@ -61,6 +80,54 @@ namespace Full_GRASP_And_SOLID
             }
 
             return result;
+        }
+
+        /// <summary>
+        /// Retorna la suma del tiempo de todos los pasos
+        /// </summary>
+        /// <returns></returns>
+        public int GetCookTime()
+        {
+            int totalTime = 0;
+            foreach (BaseStep step in steps)
+            {
+                totalTime += step.Time;
+            }
+            return totalTime;
+        }
+
+        public void Cook()
+        {
+            Console.WriteLine("A cocinar se ha dicho");
+            // Crea el objeto adaptador
+            this.timerClient = new TimerAdapter(this);
+            // Lo registra en el CountdownTimer
+            timer.Register(this.GetCookTime(),this.timerClient);
+        }
+
+        /// <summary>
+        /// Para evitar violar el princio de segregación de depedencias con esta clase, lo mejor es implementar un objeto adaptador
+        /// que use esta clase para así no afectar a las demás que dependan de ella. Aplicando así el patrón Adapter, como en el ejemplo 
+        /// de la lectura
+        /// </summary>
+        private class TimerAdapter : TimerClient
+        {
+            private Recipe recipe;
+
+            public TimerAdapter(Recipe recipe)
+            {
+                this.recipe = recipe;
+            }
+
+            public object TimeOutId { get; }
+
+            /// <summary>
+            /// Método implementado al depender de la interfaz TimerClient
+            /// </summary>
+            public void TimeOut()
+            {
+                recipe.Cooked = true;
+            }
         }
     }
 }
