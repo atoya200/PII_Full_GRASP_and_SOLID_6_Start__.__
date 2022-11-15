@@ -1,4 +1,4 @@
 bin/
 obj/
 *.txt
-Recipe_con_Adapter.cs
+Recipe_sin_adapter.cs
