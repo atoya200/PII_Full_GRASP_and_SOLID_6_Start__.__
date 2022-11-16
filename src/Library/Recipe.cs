@@ -96,6 +96,7 @@ namespace Full_GRASP_And_SOLID
 
         public void Cook()
         {
+            // Levanta una excepción cuando intenta cocinar lo ya cocinado
             if(this.Cooked == true)
             {
                 throw new InvalidOperationException("No se puede cocinar lo ya cocinado");
