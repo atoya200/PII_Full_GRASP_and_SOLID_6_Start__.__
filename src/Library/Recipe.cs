@@ -96,6 +96,10 @@ namespace Full_GRASP_And_SOLID
 
         public void Cook()
         {
+            if(this.Cooked == true)
+            {
+                throw new InvalidOperationException("No se puede cocinar lo ya cocinado");
+            }
             Console.WriteLine("A cocinar se ha dicho");
             // Crea el objeto adaptador
             this.timerClient = new TimerAdapter(this);
