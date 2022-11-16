@@ -11,7 +11,11 @@ namespace Full_GRASP_And_SOLID
 {
     public class Recipe : IRecipeContent // Modificado por DIP
     {
-        public bool Cooked { get; private set; }
+        /// <summary>
+        /// Propiedad para saber si la receta ya se cocino, por defecto se carga en false
+        /// </summary>
+        /// <value></value>
+        public bool Cooked { get; private set; } = false;
         // Cambiado por OCP
         private IList<BaseStep> steps = new List<BaseStep>();
 
@@ -28,13 +32,7 @@ namespace Full_GRASP_And_SOLID
         /// </summary>
         private TimerAdapter timerClient; 
 
-        /// <summary>
-        /// Para inicializar propiedades es que implemento el constructor
-        /// </summary>
-        public Recipe()
-        {
-            Cooked = false;
-        }
+     
         // Agregado por Creator
         public void AddStep(Product input, double quantity, Equipment equipment, int time)
         {
